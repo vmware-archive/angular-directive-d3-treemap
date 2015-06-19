@@ -9,27 +9,31 @@
     <script>
         var app = angular.module('exampleApp', ['pvtlD3Treemap']);
         app.controller('MainCtrl', function ($scope) {
-            $scope.populationData = {
-                label: 'United Kingdom',
-                population: 63181775,
-                children: [
-                    {
-                        label: 'England',
-                        population: 53012456
-                    },
-                    {
-                        label: 'Scotland',
-                        population: 5295000
-                    },
-                    {
-                        label: 'Wales',
-                        population: 3063456
-                    },
-                    {
-                        label: 'Northern Ireland',
-                        population: 1810863
-                    }
-                ]
+            $scope.populationData = undefined;
+
+            $scope.loadData = function () {
+                $scope.populationData = {
+                    label: 'United Kingdom',
+                    population: 63181775,
+                    children: [
+                        {
+                            label: 'England',
+                            population: 53012456
+                        },
+                        {
+                            label: 'Scotland',
+                            population: 5295000
+                        },
+                        {
+                            label: 'Wales',
+                            population: 3063456
+                        },
+                        {
+                            label: 'Northern Ireland',
+                            population: 1810863
+                        }
+                    ]
+                };
             };
         });
     </script>
@@ -49,7 +53,7 @@
 <body ng-app="exampleApp" ng-controller="MainCtrl">
 
 <div id="container">
-    <pvtl-d3-treemap width="500" height="400" data="populationData">
+    <pvtl-d3-treemap width="500" height="400" data="populationData" value="population">
         <div>
             <div ng-if="!children">
                 <pre>{{label}}</pre>
@@ -57,6 +61,8 @@
         </div>
     </pvtl-d3-treemap>
 </div>
+
+<button ng-click="loadData()">Load Data</button>
 
 </body>
 </html>

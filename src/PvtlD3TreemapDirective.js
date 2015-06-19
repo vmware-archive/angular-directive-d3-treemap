@@ -64,13 +64,25 @@
                             });
                         }
 
-                        div.datum(scope.data)
-                            .selectAll(".pvtlD3TreemapNode")
-                            .data(treemap.nodes)
-                            .enter()
-                            .append(createNode)
-                            //.attr("class", "pvtlD3TreemapNode") // need this to update data correctly
-                            .call(positionNode);
+                        function update(data) {
+                            var updateSelection = div.datum(data)
+                                .selectAll(".pvtlD3TreemapNode")
+                                .data(treemap.nodes);
+
+                            updateSelection.enter()
+                                .append(createNode)
+                                .attr("class", "pvtlD3TreemapNode")
+                                .call(positionNode);
+
+                            updateSelection.exit()
+                                .remove();
+                        }
+
+                        scope.$watch('data', function (newData) {
+                            if (newData) {
+                                update(newData);
+                            }
+                        });
                     }
 
                     return {

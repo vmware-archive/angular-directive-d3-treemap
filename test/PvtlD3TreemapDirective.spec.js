@@ -4,14 +4,23 @@ describe('PvtlD3TreemapDirective', function () {
     var $rootScope, $compile;
     var width, height;
     var data;
+    var newData;
 
     function makeDirective(markup) {
         var $scope = $rootScope.$new();
         $scope.populationData = data;
 
-        var pvtlD3Treemap = $compile(markup)($scope)[0];
+        var link = $compile(markup);
+        var pvtlD3Treemap = link($scope)[0];
         $rootScope.$digest();
         return pvtlD3Treemap.children[0];
+    }
+
+    function loadData(d3Container) {
+        var $scope = angular.element(d3Container.parentNode).scope();
+        $scope.populationData = data;
+
+        $rootScope.$digest();
     }
 
     function children(parent) {
@@ -66,6 +75,28 @@ describe('PvtlD3TreemapDirective', function () {
                 {
                     label: 'Scotland',
                     population: 5295000
+                },
+                {
+                    label: 'Wales',
+                    population: 3063456
+                },
+                {
+                    label: 'Northern Ireland',
+                    population: 1810863
+                }
+            ]
+        };
+        newData = {
+            label: 'United Kingdom',
+            population: 63181775,
+            children: [
+                {
+                    label: 'England',
+                    population: 44704456
+                },
+                {
+                    label: 'London',
+                    population: 8308000
                 },
                 {
                     label: 'Wales',
@@ -207,4 +238,53 @@ describe('PvtlD3TreemapDirective', function () {
             }).toThrow(new Error('You must specify the value property'));
         });
     });
+
+    describe('when data is not initially present', function () {
+        var d3Container;
+
+        beforeEach(function () {
+            var markup =
+                '<pvtl-d3-treemap width="' + width + '" height="' + height + '" data="populationData" value="population">' +
+                '<pre>{{label}}</pre>' +
+                '</pvtl-d3-treemap>';
+
+            data = undefined;
+            d3Container = makeDirective(markup);
+        });
+
+        it('should still create the container element', function () {
+            expect(d3Container).toBeTruthy();
+            expect(d3Container.children.length).toBe(0);
+        });
+
+        it('should create nodes when data arrives', function () {
+            data = newData;
+            loadData(d3Container);
+            expect(children(d3Container).map(textContent)).toEqual(['United Kingdom', 'England', 'London', 'Wales', 'Northern Ireland']);
+        });
+    });
+
+    describe('when data is refreshed', function () {
+        xit('updates the existing treemap', function () {
+            var markup =
+                '<pvtl-d3-treemap width="' + width + '" height="' + height + '" data="populationData" value="population">' +
+                '<div data-pop="{{population}}">' +
+                '<pre>{{label}}</pre>' +
+                '</div>' +
+                '</pvtl-d3-treemap>';
+            var d3Container = makeDirective(markup);
+
+            data = newData;
+            loadData(d3Container);
+
+            expect(children(d3Container).map(textContent)).toEqual(['United Kingdom', 'England', 'Wales', 'Northern Ireland', 'London']);
+
+            function dataPop(el) {
+                return parseInt(el.attributes['data-pop'].value, 10);
+            }
+
+            expect(children(d3Container).map(dataPop)).toEqual([newData.population, newData.children[0].population, newData.children[2].population, newData.children[3].population, newData.children[1].population]);
+        });
+    });
+
 });
