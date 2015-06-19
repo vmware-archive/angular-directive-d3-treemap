@@ -41,36 +41,36 @@
                                 return d[valueProperty];
                             });
 
+                        function createNode(d) {
+                            var nodeScope = scope.$new();
+                            angular.extend(nodeScope, d);
+                            var link = $compile(angular.element(nodeTemplateHtml));
+                            return link(nodeScope)[0];
+                        }
+
+                        function pixels(property) {
+                            return function (d) {
+                                return d[property] + "px";
+                            };
+                        }
+
+                        function positionNode() {
+                            this.style({
+                                position: 'absolute',
+                                left: pixels('x'),
+                                top: pixels('y'),
+                                width: pixels('dx'),
+                                height: pixels('dy')
+                            });
+                        }
+
                         div.datum(scope.data)
                             .selectAll(".pvtlD3TreemapNode")
                             .data(treemap.nodes)
                             .enter()
-                            .append(function (d) {
-                                var nodeScope = scope.$new();
-                                angular.extend(nodeScope, d);
-                                return $compile(angular.element(nodeTemplateHtml))(nodeScope)[0];
-                            })
+                            .append(createNode)
                             //.attr("class", "pvtlD3TreemapNode") // need this to update data correctly
-                            .call(position);
-
-                        function position() {
-                            this.style({
-                                position: 'absolute',
-                                left: function (d) {
-                                    return d.x + "px";
-                                },
-                                top: function (d) {
-                                    return d.y + "px";
-                                },
-                                width: function (d) {
-                                    return d.dx + "px";
-                                },
-                                height: function (d) {
-                                    return d.dy + "px";
-                                }
-                            });
-                        }
-
+                            .call(positionNode);
                     }
 
                     return {
