@@ -9,7 +9,13 @@
                 scope: {
                     data: '='
                 },
-                compile: function (jqTemplateElement) {
+                compile: function (jqTemplateElement, attrs) {
+                    var width = parseInt(attrs.width, 10);
+                    var height = parseInt(attrs.height, 10);
+                    if (!width || !height) {
+                        throw new Error('You must specify both width and height');
+                    }
+
                     var element = jqTemplateElement[0];
                     if (element.children.length !== 1) {
                         throw new Error('You must specify a node template as a single child of the directive element');
@@ -18,14 +24,12 @@
                     element.removeChild(nodeTemplate);
                     var nodeTemplateHtml = nodeTemplate.outerHTML;
 
-                    function link(scope, jqElement, attrs) {
+                    function link(scope, jqElement) {
                         var element = jqElement[0];
                         var div = d3.select(element)
                             .append("div")
                             .style('position', 'relative');
 
-                        var width = parseInt(attrs.width, 10);
-                        var height = parseInt(attrs.height, 10);
                         var treemap = d3.layout.treemap()
                             .size([width, height])
                             .value(function (d) {

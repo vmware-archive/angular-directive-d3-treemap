@@ -132,6 +132,28 @@ describe('PvtlD3TreemapDirective', function () {
     });
 
     describe('with invalid input', function () {
+        it('raises an error if there is no width', function () {
+            var badMarkup =
+                '<pvtl-d3-treemap height="' + height + '" data="population">' +
+                '<pre></pre>' +
+                '</pvtl-d3-treemap>';
+
+            expect(function () {
+                $compile(badMarkup);
+            }).toThrow(new Error('You must specify both width and height'));
+        });
+
+        it('raises an error if there is no height', function () {
+            var badMarkup =
+                '<pvtl-d3-treemap width="' + width + '" data="population">' +
+                '<pre></pre>' +
+                '</pvtl-d3-treemap>';
+
+            expect(function () {
+                $compile(badMarkup);
+            }).toThrow(new Error('You must specify both width and height'));
+        });
+
         it('raises an error if there is no node template', function () {
             var badMarkup =
                 '<pvtl-d3-treemap width="' + width + '" height="' + height + '" data="population">' +
