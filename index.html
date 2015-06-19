@@ -9,25 +9,25 @@
     <script>
         var app = angular.module('exampleApp', ['pvtlD3Treemap']);
         app.controller('MainCtrl', function ($scope) {
-            $scope.population = {
+            $scope.populationData = {
                 label: 'United Kingdom',
-                value: 63181775,
+                population: 63181775,
                 children: [
                     {
                         label: 'England',
-                        value: 53012456
+                        population: 53012456
                     },
                     {
                         label: 'Scotland',
-                        value: 5295000
+                        population: 5295000
                     },
                     {
                         label: 'Wales',
-                        value: 3063456
+                        population: 3063456
                     },
                     {
                         label: 'Northern Ireland',
-                        value: 1810863
+                        population: 1810863
                     }
                 ]
             };
@@ -49,7 +49,7 @@
 <body ng-app="exampleApp" ng-controller="MainCtrl">
 
 <div id="container">
-    <pvtl-d3-treemap width="500" height="400" data="population">
+    <pvtl-d3-treemap width="500" height="400" data="populationData">
         <div>
             <div ng-if="!children">
                 <pre>{{label}}</pre>

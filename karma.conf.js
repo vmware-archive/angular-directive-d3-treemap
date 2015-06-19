@@ -12,6 +12,7 @@ module.exports = function (config) {
 
             'src/*.js',
 
+            'test/SpecHelper.js',
             'test/*.spec.js'
         ],
 

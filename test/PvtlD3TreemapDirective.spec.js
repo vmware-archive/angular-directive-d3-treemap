@@ -7,7 +7,7 @@ describe('PvtlD3TreemapDirective', function () {
 
     function makeDirective(markup) {
         var $scope = $rootScope.$new();
-        $scope.population = data;
+        $scope.populationData = data;
 
         var pvtlD3Treemap = $compile(markup)($scope)[0];
         $rootScope.$digest();
@@ -44,32 +44,36 @@ describe('PvtlD3TreemapDirective', function () {
         return el.textContent;
     }
 
+    function area(el) {
+        return parseInt(el.style.width, 10) * parseInt(el.style.height, 10);
+    }
+
     beforeEach(inject(function (_$rootScope_, _$compile_) {
         $rootScope = _$rootScope_;
         $compile = _$compile_;
 
-        width = 300;
-        height = 150;
+        width = 1000;
+        height = 800;
 
         data = {
             label: 'United Kingdom',
-            value: 63181775,
+            population: 63181775,
             children: [
                 {
                     label: 'England',
-                    value: 53012456
+                    population: 53012456
                 },
                 {
                     label: 'Scotland',
-                    value: 5295000
+                    population: 5295000
                 },
                 {
                     label: 'Wales',
-                    value: 3063456
+                    population: 3063456
                 },
                 {
                     label: 'Northern Ireland',
-                    value: 1810863
+                    population: 1810863
                 }
             ]
         };
@@ -80,7 +84,7 @@ describe('PvtlD3TreemapDirective', function () {
 
         beforeEach(function () {
             var markup =
-                '<pvtl-d3-treemap width="' + width + '" height="' + height + '" data="population">' +
+                '<pvtl-d3-treemap width="' + width + '" height="' + height + '" data="populationData" value="population">' +
                 '<pre>{{label}}</pre>' +
                 '</pvtl-d3-treemap>';
             d3Container = makeDirective(markup);
@@ -118,11 +122,28 @@ describe('PvtlD3TreemapDirective', function () {
             expect(_.uniq(children(d3Container).map(tagName))).toEqual(['PRE']);
             expect(children(d3Container).map(textContent)).toEqual(['United Kingdom', 'England', 'Scotland', 'Wales', 'Northern Ireland']);
         });
+
+        it('sizes the nodes in proportion to their value', function () {
+            var areas = children(d3Container).map(area);
+
+            var rootArea = areas.splice(0, 1);
+            var totalPopulation = data.population;
+            var areaPerPerson = (rootArea / totalPopulation);
+
+            var expectedAreas = data.children.map(function (child) {
+                return child.population * areaPerPerson;
+            });
+
+            expect(areas[0]).toBeApproximately(expectedAreas[0], 0.01);
+            expect(areas[1]).toBeApproximately(expectedAreas[1], 0.01);
+            expect(areas[2]).toBeApproximately(expectedAreas[2], 0.01);
+            expect(areas[3]).toBeApproximately(expectedAreas[3], 0.01);
+        });
     });
 
     it('resolves directives in the nodes but not in the node template', function () {
         var markup =
-            '<pvtl-d3-treemap width="' + width + '" height="' + height + '" data="population">' +
+            '<pvtl-d3-treemap width="' + width + '" height="' + height + '" data="populationData" value="population">' +
             '<div><div ng-if="!children"><pre>{{label}}</pre></div></div>' +
             '</pvtl-d3-treemap>';
 
@@ -134,7 +155,7 @@ describe('PvtlD3TreemapDirective', function () {
     describe('with invalid input', function () {
         it('raises an error if there is no width', function () {
             var badMarkup =
-                '<pvtl-d3-treemap height="' + height + '" data="population">' +
+                '<pvtl-d3-treemap height="' + height + '" data="populationData" value="population">' +
                 '<pre></pre>' +
                 '</pvtl-d3-treemap>';
 
@@ -145,7 +166,7 @@ describe('PvtlD3TreemapDirective', function () {
 
         it('raises an error if there is no height', function () {
             var badMarkup =
-                '<pvtl-d3-treemap width="' + width + '" data="population">' +
+                '<pvtl-d3-treemap width="' + width + '" data="populationData" value="population">' +
                 '<pre></pre>' +
                 '</pvtl-d3-treemap>';
 
@@ -156,7 +177,7 @@ describe('PvtlD3TreemapDirective', function () {
 
         it('raises an error if there is no node template', function () {
             var badMarkup =
-                '<pvtl-d3-treemap width="' + width + '" height="' + height + '" data="population">' +
+                '<pvtl-d3-treemap width="' + width + '" height="' + height + '" data="populationData" value="population">' +
                 '</pvtl-d3-treemap>';
 
             expect(function () {
@@ -166,13 +187,24 @@ describe('PvtlD3TreemapDirective', function () {
 
         it('raises an error if there is a node template with more than one element', function () {
             var badMarkup =
-                '<pvtl-d3-treemap width="' + width + '" height="' + height + '" data="population">' +
+                '<pvtl-d3-treemap width="' + width + '" height="' + height + '" data="populationData" value="population">' +
                 '<p></p><p></p>' +
                 '</pvtl-d3-treemap>';
 
             expect(function () {
                 $compile(badMarkup);
             }).toThrow(new Error('You must specify a node template as a single child of the directive element'));
+        });
+
+        it('raises an error if there is no value property', function () {
+            var badMarkup =
+                '<pvtl-d3-treemap width="' + width + '" height="' + height + '" data="populationData">' +
+                '<pre></pre>' +
+                '</pvtl-d3-treemap>';
+
+            expect(function () {
+                $compile(badMarkup);
+            }).toThrow(new Error('You must specify the value property'));
         });
     });
 });

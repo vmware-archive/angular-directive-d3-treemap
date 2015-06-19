@@ -10,6 +10,11 @@
                     data: '='
                 },
                 compile: function (jqTemplateElement, attrs) {
+                    var valueProperty = attrs.value;
+                    if (!valueProperty) {
+                        throw new Error('You must specify the value property');
+                    }
+
                     var width = parseInt(attrs.width, 10);
                     var height = parseInt(attrs.height, 10);
                     if (!width || !height) {
@@ -33,7 +38,7 @@
                         var treemap = d3.layout.treemap()
                             .size([width, height])
                             .value(function (d) {
-                                return 1;
+                                return d[valueProperty];
                             });
 
                         div.datum(scope.data)
