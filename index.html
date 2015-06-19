@@ -49,7 +49,13 @@
 <body ng-app="exampleApp" ng-controller="MainCtrl">
 
 <div id="container">
-    <pvtl-d3-treemap width="500" height="400" data="population"><pre>{{label}}</pre></pvtl-d3-treemap>
+    <pvtl-d3-treemap width="500" height="400" data="population">
+        <div>
+            <div ng-if="!children">
+                <pre>{{label}}</pre>
+            </div>
+        </div>
+    </pvtl-d3-treemap>
 </div>
 
 </body>
