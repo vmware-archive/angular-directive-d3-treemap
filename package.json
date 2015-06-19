@@ -1,0 +1,23 @@
+{
+  "name": "angular-treemap",
+  "version": "1.0.0",
+  "description": "An AngularJS directive to display a D3 treemap",
+  "scripts": {
+    "test": "karma run"
+  },
+  "author": "Pivotal Labs",
+  "license": "BSD-2-Clause",
+  "devDependencies": {
+    "angular-mocks": "^1.4.1",
+    "jasmine-core": "^2.3.4",
+    "karma": "^0.12.36",
+    "karma-jasmine": "^0.3.5",
+    "karma-phantomjs-launcher": "^0.2.0",
+    "phantomjs": "^1.9.17",
+    "underscore": "^1.8.3"
+  },
+  "dependencies": {
+    "angular": "^1.4.1",
+    "d3": "^3.5.5"
+  }
+}
