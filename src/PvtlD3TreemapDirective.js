@@ -11,6 +11,9 @@
                 },
                 link: function (scope, jqElement, attrs) {
                     var element = jqElement[0];
+                    if (element.children.length !== 1) {
+                        throw new Error('You must specify a node template as a single child of the directive element');
+                    }
                     var nodeTemplate = element.children[0];
                     element.removeChild(nodeTemplate);
                     var nodeTemplateHtml = nodeTemplate.outerHTML;

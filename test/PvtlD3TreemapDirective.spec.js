@@ -110,4 +110,27 @@ describe('PvtlD3TreemapDirective', function () {
         expect(children(d3Div).map(textContent)).toEqual(['United Kingdom', 'England', 'Scotland', 'Wales', 'Northern Ireland']);
     });
 
+    it('raises an error if there is no node template', inject(function ($rootScope, $compile) {
+        var badMarkup =
+            '<pvtl-d3-treemap width="' + width + '" height="' + height + '" data="population">' +
+            '</pvtl-d3-treemap>';
+        var link = $compile(badMarkup);
+
+        expect(function () {
+            return link($rootScope.$new());
+        }).toThrow(new Error('You must specify a node template as a single child of the directive element'));
+    }));
+
+    it('raises an error if there is a node template with more than one element', inject(function ($rootScope, $compile) {
+        var badMarkup =
+            '<pvtl-d3-treemap width="' + width + '" height="' + height + '" data="population">' +
+            '<p></p><p></p>' +
+            '</pvtl-d3-treemap>';
+        var link = $compile(badMarkup);
+
+        expect(function () {
+            return link($rootScope.$new());
+        }).toThrow(new Error('You must specify a node template as a single child of the directive element'));
+    }));
+
 });
