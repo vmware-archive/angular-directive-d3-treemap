@@ -9,43 +9,48 @@
                 scope: {
                     data: '='
                 },
-                compile: function (jqTemplateElement, attrs) {
-                    var valueProperty = attrs.value;
-                    if (!valueProperty) {
+                compile: function (compileJqElement, attrs) {
+                    var valueAttr = attrs.value,
+                        widthAttr = parseInt(attrs.width, 10),
+                        heightAttr = parseInt(attrs.height, 10),
+                        compileElement = compileJqElement[0],
+                        nodeTemplate = compileElement.children[0],
+                        nodeTemplateOuterHtml;
+
+                    if (!valueAttr) {
                         throw new Error('You must specify the value property');
                     }
 
-                    var width = parseInt(attrs.width, 10);
-                    var height = parseInt(attrs.height, 10);
-                    if (!width || !height) {
+                    if (!widthAttr || !heightAttr) {
                         throw new Error('You must specify both width and height');
                     }
 
-                    var element = jqTemplateElement[0];
-                    if (element.children.length !== 1) {
+                    if (compileElement.children.length !== 1) {
                         throw new Error('You must specify a node template as a single child of the directive element');
                     }
-                    var nodeTemplate = element.children[0];
-                    element.removeChild(nodeTemplate);
-                    var nodeTemplateHtml = nodeTemplate.outerHTML;
 
-                    function link(scope, jqElement) {
-                        var element = jqElement[0];
-                        var div = d3.select(element)
+                    compileElement.removeChild(nodeTemplate);
+                    nodeTemplateOuterHtml = nodeTemplate.outerHTML;
+
+                    function postLink(scope, jqElement) {
+                        var element, div, treemap;
+
+                        element = jqElement[0];
+                        div = d3.select(element)
                             .append("div")
                             .style('position', 'relative');
 
-                        var treemap = d3.layout.treemap()
-                            .size([width, height])
+                        treemap = d3.layout.treemap()
+                            .size([widthAttr, heightAttr])
                             .value(function (d) {
-                                return d[valueProperty];
+                                return d[valueAttr];
                             });
 
                         function createNode(d) {
-                            var nodeScope = scope.$new();
+                            var nodeScope = scope.$new(),
+                                linkFn = $compile(angular.element(nodeTemplateOuterHtml));
                             angular.extend(nodeScope, d);
-                            var link = $compile(angular.element(nodeTemplateHtml));
-                            return link(nodeScope)[0];
+                            return linkFn(nodeScope)[0];
                         }
 
                         function pixels(property) {
@@ -86,7 +91,7 @@
                     }
 
                     return {
-                        post: link
+                        post: postLink
                     };
                 }
             };
