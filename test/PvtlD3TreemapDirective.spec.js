@@ -277,7 +277,11 @@ describe('PvtlD3TreemapDirective', function () {
             d3Container = makeDirective(markup);
         });
 
-        it('updates the existing treemap', function () {
+        function dataPop(el) {
+            return parseInt(el.attributes['data-pop'].value, 10);
+        }
+
+        it('updates the existing treemap when removing a child and adding another child', function () {
             data = newData;
             loadData(d3Container);
 
@@ -285,13 +289,18 @@ describe('PvtlD3TreemapDirective', function () {
             var expectedLabelsSorted = ['United Kingdom', 'England', 'Wales', 'Northern Ireland', 'London'].sort();
             expect(actualLabelsSorted).toEqual(expectedLabelsSorted);
 
-            function dataPop(el) {
-                return parseInt(el.attributes['data-pop'].value, 10);
-            }
-
             var actualPopulationSorted = children(d3Container).map(dataPop).sort();
             var expectedPopulationSorted = [newData.population, newData.children[0].population, newData.children[2].population, newData.children[3].population, newData.children[1].population].sort();
             expect(actualPopulationSorted).toEqual(expectedPopulationSorted);
+        });
+
+        it('updates the existing treemap if a property value changes', function () {
+            newData.children[0].population = 100000000;
+            data = newData;
+
+            loadData(d3Container);
+            var actualPopulationSorted = children(d3Container).map(dataPop).sort();
+            expect(actualPopulationSorted[0]).toBe(100000000);
         });
 
         it('removes the treemap if data is set to be an empty object', function () {
