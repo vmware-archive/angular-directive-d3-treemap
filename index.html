@@ -59,7 +59,11 @@
                         }
                     ]
                 };
-            }
+            };
+
+            $scope.clearData = function () {
+                $scope.populationData = undefined;
+            };
         });
     </script>
 
@@ -99,6 +103,7 @@
     <p>
         <button ng-click="loadData()">Load Data</button>
         <button ng-click="updateData()">Update Data</button>
+        <button ng-click="clearData()">Clear Data</button>
     </p>
 
     <div class="container">
