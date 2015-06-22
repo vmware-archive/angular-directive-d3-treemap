@@ -35,6 +35,31 @@
                     ]
                 };
             };
+
+            $scope.updateData = function () {
+                 $scope.populationData = {
+                    label: 'United Kingdom',
+                    population: 63181775,
+                    children: [
+                        {
+                            label: 'England',
+                            population: 53012456
+                        },
+                        {
+                            label: 'London',
+                            population: 8308000
+                        },
+                        {
+                            label: 'Wales',
+                            population: 3063456
+                        },
+                        {
+                            label: 'Northern Ireland',
+                            population: 1810863
+                        }
+                    ]
+                };
+            }
         });
     </script>
 
@@ -71,7 +96,10 @@
 <body ng-app="exampleApp" ng-controller="MainCtrl">
     <h1>D3 Treemap Angular Directive</h1>
 
-    <p><button ng-click="loadData()">Load Data</button></p>
+    <p>
+        <button ng-click="loadData()">Load Data</button>
+        <button ng-click="updateData()">Update Data</button>
+    </p>
 
     <div class="container">
         <pvtl-d3-treemap width="850" height="850" data="populationData" value="population">
