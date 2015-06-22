@@ -1,12 +1,24 @@
 {
-  "name": "angular-treemap",
+  "name": "angular-directive-d3-treemap",
   "version": "1.0.0",
-  "description": "An AngularJS directive to display a D3 treemap",
+  "description": "An AngularJS directive for displaying a D3 Treemap.",
   "scripts": {
     "test": "karma run"
   },
   "author": "Pivotal Labs",
-  "license": "BSD-2-Clause",
+  "contributors": [
+    "Tom Anderson <toanderson@pivotal.io>",
+    "Benjamin Grohbiel <bgrohbiel@pivotal.io>"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pivotal/angular-directive-d3-treemap"
+  },
+  "dependencies": {
+    "angular": "^1.4.1",
+    "d3": "^3.5.5"
+  },
   "devDependencies": {
     "angular-mocks": "^1.4.1",
     "jasmine-core": "^2.3.4",
@@ -15,9 +27,5 @@
     "karma-phantomjs-launcher": "^0.2.0",
     "phantomjs": "^1.9.17",
     "underscore": "^1.8.3"
-  },
-  "dependencies": {
-    "angular": "^1.4.1",
-    "d3": "^3.5.5"
   }
 }
