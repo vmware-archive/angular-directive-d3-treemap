@@ -72,7 +72,14 @@
                         function update(data) {
                             var updateSelection = div.datum(data)
                                 .selectAll(".pvtlD3TreemapNode")
-                                .data(treemap.nodes);
+                                .data(treemap.nodes, function (d) {
+                                    function generateUniqueID() {
+                                        return Object.keys(d).reduce(function (previousValue, currentValue) {
+                                            return previousValue + d[currentValue];
+                                        }, 'id:');
+                                    }
+                                    return generateUniqueID();
+                                });
 
                             updateSelection.enter()
                                 .append(createNode)

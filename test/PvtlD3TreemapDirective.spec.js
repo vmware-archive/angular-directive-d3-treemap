@@ -265,7 +265,7 @@ describe('PvtlD3TreemapDirective', function () {
     });
 
     describe('when data is refreshed', function () {
-        xit('updates the existing treemap', function () {
+        it('updates the existing treemap', function () {
             var markup =
                 '<pvtl-d3-treemap width="' + width + '" height="' + height + '" data="populationData" value="population">' +
                 '<div data-pop="{{population}}">' +
@@ -277,14 +277,20 @@ describe('PvtlD3TreemapDirective', function () {
             data = newData;
             loadData(d3Container);
 
-            expect(children(d3Container).map(textContent)).toEqual(['United Kingdom', 'England', 'Wales', 'Northern Ireland', 'London']);
+            var actualLabelsSorted = children(d3Container).map(textContent).sort();
+            var expectedLabelsSorted = ['United Kingdom', 'England', 'Wales', 'Northern Ireland', 'London'].sort();
+            expect(actualLabelsSorted).toEqual(expectedLabelsSorted);
 
             function dataPop(el) {
                 return parseInt(el.attributes['data-pop'].value, 10);
             }
 
-            expect(children(d3Container).map(dataPop)).toEqual([newData.population, newData.children[0].population, newData.children[2].population, newData.children[3].population, newData.children[1].population]);
+            var actualPopulationSorted = children(d3Container).map(dataPop).sort();
+            var expectedPopulationSorted = [newData.population, newData.children[0].population, newData.children[2].population, newData.children[3].population, newData.children[1].population].sort();
+            expect(actualPopulationSorted).toEqual(expectedPopulationSorted);
         });
+
     });
+
 
 });
