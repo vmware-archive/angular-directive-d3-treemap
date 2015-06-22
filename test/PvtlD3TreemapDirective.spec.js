@@ -265,15 +265,19 @@ describe('PvtlD3TreemapDirective', function () {
     });
 
     describe('when data is refreshed', function () {
-        it('updates the existing treemap', function () {
-            var markup =
+        var markup, d3Container;
+
+        beforeEach(function () {
+            markup =
                 '<pvtl-d3-treemap width="' + width + '" height="' + height + '" data="populationData" value="population">' +
                 '<div data-pop="{{population}}">' +
                 '<pre>{{label}}</pre>' +
                 '</div>' +
                 '</pvtl-d3-treemap>';
-            var d3Container = makeDirective(markup);
+            d3Container = makeDirective(markup);
+        });
 
+        it('updates the existing treemap', function () {
             data = newData;
             loadData(d3Container);
 
@@ -288,6 +292,12 @@ describe('PvtlD3TreemapDirective', function () {
             var actualPopulationSorted = children(d3Container).map(dataPop).sort();
             var expectedPopulationSorted = [newData.population, newData.children[0].population, newData.children[2].population, newData.children[3].population, newData.children[1].population].sort();
             expect(actualPopulationSorted).toEqual(expectedPopulationSorted);
+        });
+
+        it('removes the treemap if data is set to be an empty object', function () {
+            data = undefined;
+            loadData(d3Container);
+            expect(d3Container.children.length).toBe(0);
         });
 
     });

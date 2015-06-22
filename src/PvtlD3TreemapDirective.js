@@ -33,18 +33,23 @@
                     nodeTemplateOuterHtml = nodeTemplate.outerHTML;
 
                     function postLink(scope, jqElement) {
-                        var element, div, treemap;
+                        var element = jqElement[0], div, treemap;
 
-                        element = jqElement[0];
-                        div = d3.select(element)
-                            .append("div")
-                            .style('position', 'relative');
+                        function setup() {
+                            div = d3.select(element)
+                                .append("div")
+                                .style('position', 'relative');
 
-                        treemap = d3.layout.treemap()
-                            .size([widthAttr, heightAttr])
-                            .value(function (d) {
-                                return d[valueAttr];
-                            });
+                            treemap = d3.layout.treemap()
+                                .size([widthAttr, heightAttr])
+                                .value(function (d) {
+                                    return d[valueAttr];
+                                });
+                        }
+
+                        function clear() {
+                            div.selectAll(".pvtlD3TreemapNode").remove();
+                        }
 
                         function createNode(d) {
                             var nodeScope = scope.$new(),
@@ -78,6 +83,7 @@
                                             return previousValue + d[currentValue];
                                         }, 'id:');
                                     }
+
                                     return generateUniqueID();
                                 });
 
@@ -90,9 +96,13 @@
                                 .remove();
                         }
 
+                        setup();
+
                         scope.$watch('data', function (newData) {
                             if (newData) {
                                 update(newData);
+                            } else {
+                                clear();
                             }
                         });
                     }
